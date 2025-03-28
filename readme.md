@@ -1,4 +1,4 @@
-# Dental Code Test
+# Durr Dental technical test
 
 A Python project for dental code test
 
