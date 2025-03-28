@@ -1,0 +1,52 @@
+service: invitation-service
+
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: ap-southeast-2
+  stage: dev
+  memorySize: 128
+  timeout: 30
+
+functions:
+  api:
+    handler: src.main.handler
+    events:
+      - httpApi: "*"
+
+resources:
+  Resources:
+    InvitationsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Invitations
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: code
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+          - AttributeName: code
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+custom:
+  serverless-offline:
+    httpPort: 3001
+    httpsProtocol: null
+  pythonRequirements:
+    dockerizePip: true
+    # dynamodb:
+    #   start:
+    #     port: 8000
+    #     inMemory: true
+    #     migrate: true
+    #     seed: true
+    stages:
+      - dev
